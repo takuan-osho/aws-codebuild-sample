@@ -1,0 +1,78 @@
+{
+    "variables": {
+      "aws_access_key": "",
+      "aws_secret_key": "",
+      "aws_region_name": "ap-northeast-1",
+      "ami_name": "CentOS 6 (x86_64) - with Updates HVM",
+      "_comment": "CentOS 6 (x86_64) - with Updates HVM https://aws.amazon.com/marketplace/pp/B00NQAYLWO/",
+      "aws_source_ami": "ami-fa3d3f94",
+      "aws_instance_type": "t2.micro",
+      "_comment": "jp",
+      "aws_vpc_id": "",
+      "_comment": "development-jp",
+      "aws_subnet_id": "",
+      "ami_modified_by": ""
+    },
+    "builders": [
+      {
+        "type": "amazon-ebs",
+        "access_key": "{{user `aws_access_key`}}",
+        "secret_key": "{{user `aws_secret_key`}}",
+        "region": "{{user `aws_region_name`}}",
+        "source_ami": "{{user `aws_source_ami`}}",
+        "ami_name": "{{user `ami_name`}} {{isotime | clean_ami_name}}",
+        "instance_type": "{{user `aws_instance_type`}}",
+        "associate_public_ip_address": true,
+        "vpc_id": "{{user `aws_vpc_id`}}",
+        "subnet_id": "{{user `aws_subnet_id`}}",
+        "ssh_username": "centos",
+        "ssh_timeout": "5m",
+        "ssh_pty": true,
+        "ami_block_device_mappings": [
+          {
+            "device_name": "/dev/sda1",
+            "volume_type": "gp2",
+            "volume_size": "20",
+            "delete_on_termination": true
+          },
+          {
+            "virtual_name": "ephemeral0",
+            "device_name": "/dev/sdb"
+          },
+          {
+            "virtual_name": "ephemeral1",
+            "device_name": "/dev/sdc"
+          },
+          {
+            "virtual_name": "ephemeral2",
+            "device_name": "/dev/sdd"
+          },
+          {
+            "virtual_name": "ephemeral3",
+            "device_name": "/dev/sde"
+          }
+        ],
+        "tags": {
+          "Name": "{{user `ami_name`}} {{isotime | clean_ami_name}}",
+          "Release": "{{isotime | clean_ami_name}}",
+          "aws_source_ami": "{{user `aws_source_ami`}}",
+          "modified_by": "{{user `ami_modified_by`}}"
+        }
+      }
+    ],
+    "provisioners": [
+      {
+        "inline": [
+          "sudo yum -y update ca-certificates",
+          "sudo rpm -Uvh http://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm",
+          "sudo yum -y --enablerepo=epel install ansible"
+        ],
+        "type": "shell"
+      },
+      {
+        "type": "ansible-local",
+        "playbook_file": "playbook.aws.ami.centos.6.x86_64.HVM.yml",
+        "staging_directory": "/tmp/packer-provisioner-ansible-local"
+      }
+    ]
+  }

@@ -1,0 +1,30 @@
+- hosts: all
+  gather_facts: true
+  become: yes
+  vars:
+    - debug: 0
+
+  pre_tasks:
+
+  tasks:
+    - name: yum update
+      shell: sudo yum -y update --exclude="kernel* sudo*"
+      tags:
+        - yum.update
+
+    - name: Install packages
+      yum: name={{ item }} state=latest enablerepo=epel
+      with_items:
+        - dracut-modules-growroot
+        - cloud-utils-growpart
+      tags:
+        - yum.install
+
+    - name: Fix root volume size
+      shell: dracut --force --add growroot /boot/initramfs-{{ ansible_kernel }}.img
+      tags:
+        - dracut
+
+  handlers:
+
+  post_tasks:
