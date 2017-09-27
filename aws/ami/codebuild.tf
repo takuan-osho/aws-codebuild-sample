@@ -5,7 +5,11 @@ resource "aws_codebuild_project" "codebuild_sample" {
   service_role  = "${aws_iam_role.codebuild_sample.arn}"
 
   artifacts {
-    type = "NO_ARTIFACTS"
+    type = "S3"
+    location = "aws-codebuild-sample"
+    namespace_type = "BUILD_ID"
+    packaging = "ZIP"
+    path = "aws-codebuild-sample"
   }
 
   environment {
