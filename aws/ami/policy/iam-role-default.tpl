@@ -44,6 +44,17 @@
       "Resource": [
         "*"
       ]
+    },
+    {
+      "Sid": "S3AccessPolicy",
+      "Effect": "Allow",
+      "Action": [
+        "s3:CreateBucket",
+        "s3:GetObject",
+        "s3:List*",
+        "s3:PutObject"
+      ],
+      "Resource": "*"
     }
   ]
 }
