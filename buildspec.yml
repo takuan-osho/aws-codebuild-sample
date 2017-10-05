@@ -19,6 +19,7 @@ phases:
       - cd aws/ami && ../../packer validate ${PACKER_TEMPLATE}
   build:
     commands:
+      # comment test
       - echo "Set AWS credentials"
       - cd ../../
       - curl -qL -o aws_credentials.json http://169.254.170.2/$AWS_CONTAINER_CREDENTIALS_RELATIVE_URI > aws_credentials.json
@@ -27,6 +28,7 @@ phases:
       - aws configure set aws_secret_access_key `./jq -r '.SecretAccessKey' aws_credentials.json`
       - aws configure set aws_session_token `./jq -r '.Token' aws_credentials.json`
       - cat aws_credentials.json
+      # comment is fine?
       - cd aws/ami && ../../packer build -var "ami_modified_by=${AMI_MODIFIER}" -var-file=../../aws_credentials.json ${PACKER_TEMPLATE}
   post_build:
     commands:
