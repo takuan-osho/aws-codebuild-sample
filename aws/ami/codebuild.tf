@@ -15,6 +15,5 @@ resource "aws_codebuild_project" "codebuild_sample" {
 
   source {
     type     = "CODEPIPELINE"
-    location = "codepipeline-sample"
   }
 }
