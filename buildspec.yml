@@ -22,7 +22,7 @@ phases:
       - pwd
       - ls -al
       - echo "Validate packer template json"
-      - packer validate ${PACKER_TEMPLATE}
+      - ./packer validate ${PACKER_TEMPLATE}
   build:
     commands:
       - echo "Set AWS credentials"
@@ -32,7 +32,7 @@ phases:
       - aws configure set aws_secret_access_key `./jq -r '.SecretAccessKey' aws_credentials.json`
       - aws configure set aws_session_token `./jq -r '.Token' aws_credentials.json`
       - cat aws_credentials.json
-      - packer build -var "ami_modified_by=${AMI_MODIFIER}" -var-file=aws_credentials.json ${PACKER_TEMPLATE}
+      - ./packer build -var "ami_modified_by=${AMI_MODIFIER}" -var-file=aws_credentials.json ${PACKER_TEMPLATE}
   post_build:
     commands:
       - echo "Finish the build with packer `date`"
