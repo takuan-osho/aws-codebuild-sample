@@ -19,6 +19,8 @@ phases:
       - echo "Install jq"
       - curl -qL -o jq https://stedolan.github.io/jq/download/linux64/jq && chmod +x ./jq
       # Validate packer template
+      - pwd
+      - ls -al
       - echo "Validate packer template json"
       - packer validate ${PACKER_TEMPLATE}
   build:
